@@ -1,4 +1,4 @@
-@import url("components/buttons.css");
+@import url("./components/buttons.css");
 
 :root {
   /* Fundos */
@@ -35,6 +35,7 @@ h1 {
     font-family: 'Merriweather', Arial;
     font-weight: 400;
     color: var(--color-accent);
+    text-align: center;
 } 
 
 h2, h3 {
@@ -53,12 +54,13 @@ h2 {
 
 p {
   color: var(--text-main);
+  padding: 14px 8px;
 }
 
 
 
 section {
-  padding: 4rem 2rem;
+  padding: 24px 48px;
 }
 
 .section-alt {
@@ -67,16 +69,59 @@ section {
 
 #hero {
     background-color: var(--bg-main);
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+
 }
+
+.hero-container {
+  display: flex;
+  align-items: center;
+  justify-self: space-between;
+  max-width: 1200px;
+  width: 100%;
+  gap: 60px
+}
+
+.hero-text {
+  flex: 2;
+  text-align: left;
+}
+
+.hero-text h1 {
+  text-align: left;
+  padding: 14px 8px;
+}
+
+#p-hero {
+  font-size: 32px;
+  color: var(--text-secondary);
+  padding: 14px 8px;  
+}
+
+.hero-right-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+
+.hero-image img{
+  max-width: 100%;
+  height: auto;
+  width: 362px;
+}
+
 
 #description {
     background-color: var(--bg-secondary);
 }
 
-#p-hero {
-  font-size: 24pt;
-  color: var(--text-secondary)  
-}
 
 #events {
   background-color: var(--bg-alt);    
@@ -103,4 +148,38 @@ section {
 .article ol {
   color: var(--text-alt);
   font-size: 16px;
+}
+
+.btn-primary {
+  align-self: center;
+}
+
+.div-container {
+  gap: 20px;
+}
+
+.div-container p, button {
+  padding: 14px 8px;
+  gap: 20px;
+}
+
+.center-btn-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 20px 0;
+}
+
+.center-btn-wrapper a,
+.center-btn-wrapper button {
+  margin: 0 auto;
+  display: inline-block;
+}
+
+hr.spacer {
+  border: none;
+  border-top: 2px solid var(--color-accent); 
+  margin: 8.5px auto; 
+  width: 93%; 
+  opacity: 0.8;
 }

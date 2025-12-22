@@ -6,6 +6,8 @@
   border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
 }
 
 .btn-secondary {
@@ -16,4 +18,7 @@
   border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  
 }

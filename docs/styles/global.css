@@ -33,7 +33,7 @@ html, body {
 body {
   display: flex;
   flex-direction: column;
-  
+
   background-color: var(--bg-main);
   color: var(--text-main);
   font-family: "Inter", system-ui, sans-serif;
@@ -202,4 +202,37 @@ hr.spacer {
     margin: 0 auto;    
     width: 100%;       
     padding: 0 20px;
+}
+
+@media (max-width: 768px) {
+  .hero-container {
+    flex-direction: column;
+    text-align: center;
+    gap:30px
+  }
+
+  .hero-text {
+    text-align: center;
+  }
+  
+
+  .hero-text h1 {
+    font-size: 32px;
+  }
+
+  .about-text {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .center-btn-wrapper {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+  .hero-image img {
+    height: 195px;
+    width: auto;
+  }
+  
 }

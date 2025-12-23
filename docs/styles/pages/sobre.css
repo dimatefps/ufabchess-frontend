@@ -1,6 +1,15 @@
 
 .about-text {
     text-align: left;
-    width: 50%;
+    width: 55%;
+    margin: 0 auto;
     padding: 16px;
+}
+
+@media (max-width: 768px) {
+    .about-text {
+        text-align: center;
+        width: 100%;
+        padding: 10px;
+    }
 }

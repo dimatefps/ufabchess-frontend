@@ -1,4 +1,6 @@
 @import url("./components/buttons.css");
+@import url("./layouts/header.css");
+@import url("./layouts/footer.css");
 
 :root {
   /* Fundos */
@@ -23,12 +25,25 @@
   box-sizing: border-box;
 }
 
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
 body {
+  display: flex;
+  flex-direction: column;
+  
   background-color: var(--bg-main);
   color: var(--text-main);
   font-family: "Inter", system-ui, sans-serif;
   font-size: 16px;
   line-height: 1.6;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
 }
 
 h1 {
@@ -69,7 +84,6 @@ section {
 
 #hero {
     background-color: var(--bg-main);
-    min-height: 80vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -81,7 +95,6 @@ section {
   display: flex;
   align-items: center;
   justify-self: space-between;
-  max-width: 1200px;
   width: 100%;
   gap: 60px
 }
@@ -182,4 +195,11 @@ hr.spacer {
   margin: 8.5px auto; 
   width: 93%; 
   opacity: 0.8;
+}
+
+.container {
+    max-width: 1200px; 
+    margin: 0 auto;    
+    width: 100%;       
+    padding: 0 20px;
 }

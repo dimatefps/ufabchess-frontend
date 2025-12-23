@@ -1,0 +1,51 @@
+header {
+    background-color: var(--bg-main);
+    padding: 10px 0;
+    border-bottom: 1px solid #333;
+}
+
+.header-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.header-logo img {
+  height: 40px; 
+  width: auto;
+}
+
+.header-links {
+  display: flex;
+  gap: 25px; 
+}
+
+.header-links a {
+  color: var(--text-main);
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.header-links a:hover {
+  color: var(--color-accent);
+}
+
+.header-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+  padding: 0 50px; /* Isso controla o quanto ele "cola" nas bordas */
+}

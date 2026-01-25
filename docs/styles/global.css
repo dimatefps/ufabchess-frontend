@@ -132,7 +132,7 @@ section {
 
 
 #description {
-    background-color: var(--bg-secondary);
+  background-color: var(--bg-secondary);
 }
 
 
@@ -204,6 +204,14 @@ hr.spacer {
     padding: 0 20px;
 }
 
+.iframe-sheet {
+  width: 100%;
+  max-width: 950px; /* desktop */
+  display: block;
+  margin: 0 8.5px; /* centraliza no desktop */
+  border: 0;
+}
+
 @media (max-width: 768px) {
   .hero-container {
     flex-direction: column;
@@ -234,5 +242,7 @@ hr.spacer {
     height: 195px;
     width: auto;
   }
-  
+  .iframe-sheet {
+    max-width: 100%;
+  } 
 }

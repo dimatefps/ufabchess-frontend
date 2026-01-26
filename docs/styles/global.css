@@ -212,6 +212,11 @@ hr.spacer {
   border: 0;
 }
 
+.tabela-rating {
+  display: flex;
+  justify-content: center;
+}
+
 @media (max-width: 768px) {
   .hero-container {
     flex-direction: column;
@@ -248,5 +253,10 @@ hr.spacer {
 
   .ranking-atual {
     width: 100%;
+  }
+
+  .tabela-rating {
+    width: 100%;
+    align-items: center;
   }
 }

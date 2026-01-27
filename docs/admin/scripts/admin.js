@@ -213,3 +213,64 @@ async function submitMatch() {
   alert("Partida registrada com sucesso");
   form.reset();
 }
+
+const matchesList = document.getElementById("matches-list");
+
+async function loadRecentMatches() {
+  const { data, error } = await supabase
+    .from("matches")
+    .select(`
+      id,
+      round_number,
+      created_at,
+      player_white:player_white(full_name),
+      player_black:player_black(full_name)
+    `)
+    .order("created_at", { ascending: false })
+    .limit(10);
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  matchesList.innerHTML = "";
+
+  data.forEach(match => {
+    const li = document.createElement("li");
+
+    li.textContent =
+      `Rodada ${match.round_number} - ` +
+      `${match.player_white.full_name} x ${match.player_black.full_name} `;
+
+    const btn = document.createElement("button");
+    btn.textContent = "Desfazer";
+    btn.onclick = () => rollbackMatch(match.id);
+
+    li.appendChild(btn);
+    matchesList.appendChild(li);
+  });
+}
+
+async function rollbackMatch(matchId) {
+  const confirmed = confirm(
+    "Tem certeza que deseja desfazer esta partida?\n" +
+    "Os ratings serão revertidos."
+  );
+
+  if (!confirmed) return;
+
+  const { error } = await supabase.rpc("rollback_match", {
+    p_match_id: matchId
+  });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  alert("Partida desfeita com sucesso");
+  loadRecentMatches();
+}
+
+loadRecentMatches();

@@ -261,7 +261,9 @@ async function rollbackMatch(matchId) {
   if (!confirmed) return;
 
   const { error } = await supabase.rpc("rollback_match", {
-    p_match_id: matchId
+    p_match_id: matchId,
+    p_referee_id: refereeId,
+    p_reason: "Correção de resultado"
   });
 
   if (error) {

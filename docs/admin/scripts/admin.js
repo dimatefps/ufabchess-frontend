@@ -70,10 +70,20 @@ async function loadTournaments() {
   const { data, error } = await supabase
     .from("tournaments")
     .select("id, name, edition")
+    .eq("status", "ongoing")
     .order("created_at", { ascending: false });
 
   if (error) {
     console.error("Erro ao carregar torneios", error);
+    return;
+  }
+
+  if (!data.length) {
+    const option = document.createElement("option");
+    option.disabled = true;
+    option.selected = true;
+    option.textContent = "Nenhum torneio em andamento";
+    tournamentSelect.appendChild(option);
     return;
   }
 
@@ -87,6 +97,7 @@ async function loadTournaments() {
     tournamentSelect.appendChild(option);
   });
 }
+
 
 async function loadPlayers() {
   const { data, error } = await supabase

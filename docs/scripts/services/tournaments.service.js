@@ -1,5 +1,16 @@
 import { supabase } from "./supabase.js";
 
+export async function getOngoingTournament() {
+  const { data, error } = await supabase
+    .from("tournaments")
+    .select("*")
+    .eq("status", "ongoing")
+    .single();
+
+  if (error && error.code !== "PGRST116") throw error;
+  return data;
+}
+
 export async function getFinishedTournaments() {
   const { data, error } = await supabase
     .from("tournaments")

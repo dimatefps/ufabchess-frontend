@@ -268,59 +268,28 @@ async function loadRecentMatches() {
   });
 }
 
-async function rollbackMatch(matchId, reason) {
-  // 1. Buscar dados da partida
-  const { data: match, error: matchError } = await supabase
-    .from("matches")
-    .select(`
-      id,
-      tournament_id,
-      round_number,
-      player_white,
-      player_black,
-      created_at
-    `)
-    .eq("id", matchId)
-    .single();
+async function rollbackMatch(matchId) {
+  const reason = prompt("Motivo do rollback (opcional):");
 
-  if (matchError || !match) {
-    alert("Não foi possível encontrar a partida para rollback");
-    return;
-  }
+  if (reason === null) return;
 
-  // 2. Inserir snapshot no histórico de rollbacks
-  const { error: rollbackError } = await supabase
-    .from("match_rollbacks")
-    .insert({
-      match_id: match.id,
-      tournament_id: match.tournament_id,
-      round_number: match.round_number,
-      player_white: match.player_white,
-      player_black: match.player_black,
-      created_at_match: match.created_at,
-      referee_id: user.id,
-      reason
-    });
+  const { error } = await supabase.rpc("rollback_match", {
+    p_match_id: matchId,
+    p_referee_id: user.id,
+    p_reason: reason
+  });
 
-  if (rollbackError) {
-    console.error(rollbackError);
-    alert("Erro ao salvar histórico de rollback");
-    return;
-  }
-
-  // 3. Apagar a partida
-  const { error: deleteError } = await supabase
-    .from("matches")
-    .delete()
-    .eq("id", matchId);
-
-  if (deleteError) {
-    alert("Erro ao apagar a partida");
+  if (error) {
+    console.error(error);
+    alert(error.message || "Erro ao realizar rollback");
     return;
   }
 
   alert("Rollback realizado com sucesso");
+
+  await loadRecentMatches();
 }
+
 
 
 loadRecentMatches();

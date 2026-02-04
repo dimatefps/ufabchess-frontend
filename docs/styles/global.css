@@ -205,11 +205,75 @@ section {
   border: 0;
 }
 
+/* Container principal da tabela no ratings.html */
 .tabela-rating {
-  display: flex;
-  justify-content: center;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 20px 0;
+    /* justify-content: center; */ /* Mantido do seu original */
 }
 
+/* Wrapper para permitir scroll no celular sem quebrar o layout */
+.ratings-wrapper {
+    width: 100%;
+    max-width: 800px; /* Limita a largura no PC para melhor leitura */
+    overflow-x: auto;
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+
+.ratings-table-main {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--text-main);
+    min-width: 320px; /* Garante que não colapse no mobile */
+}
+
+.ratings-table-main th {
+    background-color: var(--color-primary);
+    color: #ffffff;
+    padding: 15px;
+    text-align: left;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.ratings-table-main td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #333;
+}
+
+/* Efeito de destaque nas linhas */
+.ratings-table-main tbody tr:nth-child(even) {
+    background-color: #2a2a2a;
+}
+
+.ratings-table-main tbody tr:hover {
+    background-color: #333;
+}
+
+/* Estilização das colunas */
+.col-pos {
+    width: 50px;
+    text-align: center;
+    font-weight: bold;
+    color: var(--color-accent);
+}
+
+.col-player {
+    text-align: left;
+}
+
+.col-rating {
+    width: 100px;
+    text-align: center;
+    font-family: monospace;
+    font-weight: bold;
+    color: var(--color-accent);
+}
 /* --- Estilos para a Seção de Torneios --- */
 
 .tournament {
@@ -416,6 +480,19 @@ section {
   .tabela-rating {
     width: 100%;
     align-items: center;
+  }
+
+  .ratings-table-main th, 
+  .ratings-table-main td {
+      padding: 10px; /* Espaçamento mais compacto no celular */
+      font-size: 14px;
+  }
+
+  .col-player {
+      max-width: 100px; /* Evita que nomes muito longos estiquem a tela */
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
   }
 
   /* Ranking mais compacto no mobile */

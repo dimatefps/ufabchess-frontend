@@ -5,7 +5,7 @@ on:
     branches: ["main"]
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
@@ -16,14 +16,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Injetar Variáveis
+      - name: Injetar Variáveis no env.js
         run: |
-          # Substitui as etiquetas pelo valor real que está no GitHub Secrets
+          # O sed substitui as etiquetas pelos segredos que você salvou no GitHub
           sed -i "s|{{SUPABASE_URL}}|${{ secrets.SUPABASE_URL }}|g" docs/scripts/services/env.js
           sed -i "s|{{SUPABASE_ANON_KEY}}|${{ secrets.SUPABASE_ANON_KEY }}|g" docs/scripts/services/env.js
+          
+          # Verificação simples no log do Action (sem mostrar as chaves reais)
+          echo "Arquivo env.js processado."
+          ls -l docs/scripts/services/env.js
 
-      - name: Deploy para GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs # O GitHub vai publicar o conteúdo da pasta docs já com as chaves injetadas
+          path: ./docs # Envia a pasta docs já processada para o deploy
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4

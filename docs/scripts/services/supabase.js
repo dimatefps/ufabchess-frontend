@@ -1,7 +1,7 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-import { ENV } from "./env.js"; // Importa as variáveis do env.js
+import { ENV } from "./env.js"; // Importa o arquivo onde o Action vai injetar os dados
 
-// Agora sim, criamos a instância usando os valores de ENV
+// Aqui criamos a conexão de fato usando os valores processados
 export const supabase = createClient(ENV.SUPABASE_URL, ENV.SUPABASE_ANON_KEY);
 
-console.log("Supabase client carregado com sucesso!");
+console.log("Supabase client inicializado com sucesso!");

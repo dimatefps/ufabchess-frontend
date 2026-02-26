@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UFABCHESS — Meu Perfil</title>
+  <link rel="icon" href="../assets/images/logoufabchess.ico" type="image/x-icon">
+  <link rel="stylesheet" href="../styles/global.css">
+  <style>
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    /* Player card */
+    .profile-header {
+      grid-column: 1 / -1;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px 32px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .profile-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      border: 2px solid var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--green);
+      flex-shrink: 0;
+    }
+    .profile-info h2 {
+      font-size: 1.3rem;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .profile-info .profile-email {
+      font-size: .82rem;
+      color: var(--text-muted);
+    }
+    .profile-info .profile-rank {
+      font-size: .85rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* Stat cards */
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 22px 24px;
+      text-align: center;
+    }
+    .stat-card .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--green);
+      font-family: 'Courier New', monospace;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-card .stat-label {
+      font-size: .72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+    }
+
+    /* Check-in section */
+    .checkin-card {
+      grid-column: 1 / -1;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px 28px;
+    }
+    .checkin-card .card-title { margin-bottom: 14px; }
+
+    .checkin-event {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: 16px 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+    .checkin-event-info h3 {
+      font-size: 1rem;
+      margin-bottom: 2px;
+    }
+    .checkin-event-info p {
+      font-size: .84rem;
+      color: var(--text-secondary);
+    }
+    .checkin-event-info .slots {
+      font-size: .78rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .checkin-event-info .slots strong { color: var(--green); }
+
+    .checkin-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-top: 6px;
+    }
+    .checkin-confirmed {
+      background: rgba(118,150,86,.12);
+      border: 1px solid rgba(118,150,86,.25);
+      color: var(--green);
+    }
+    .checkin-confirmed::before { content: '✓ '; }
+
+    #btn-checkin {
+      white-space: nowrap;
+      min-width: 150px;
+    }
+    #btn-cancel-checkin {
+      white-space: nowrap;
+      min-width: 150px;
+      background: transparent;
+      color: #e88;
+      border: 1px solid rgba(200,80,80,.4);
+      font-family: var(--font-body);
+      font-size: .85rem;
+      font-weight: 600;
+      padding: 9px 20px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--ease);
+    }
+    #btn-cancel-checkin:hover {
+      border-color: #e88;
+      background: rgba(200,80,80,.08);
+    }
+
+    /* Checkin list */
+    .checkin-list {
+      margin-top: 16px;
+    }
+    .checkin-list-header {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .checkin-player {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: .88rem;
+      animation: fadeUp .25s ease both;
+    }
+    .checkin-player:last-child { border-bottom: none; }
+    .checkin-player .cp-pos {
+      width: 22px;
+      font-weight: 600;
+      font-size: .8rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    .checkin-player .cp-name {
+      flex: 1;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .checkin-player .cp-rating {
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      color: var(--green);
+      font-size: .88rem;
+    }
+
+    /* Logout */
+    .profile-actions {
+      margin-top: 8px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    #btn-logout {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      font-family: var(--font-body);
+      font-size: .82rem;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--ease);
+    }
+    #btn-logout:hover {
+      color: #e88;
+      border-color: rgba(200,80,80,.4);
+    }
+
+    /* Loading */
+    .profile-loading {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-muted);
+      font-size: .9rem;
+    }
+
+    @media (max-width: 600px) {
+      .profile-grid { grid-template-columns: 1fr; }
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 14px;
+      }
+      .profile-info h2 { justify-content: center; }
+      .checkin-event { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <div class="page-hero">
+      <div class="container">
+        <h1>Meu Perfil</h1>
+        <p>Seus dados, rating e presença nos torneios.</p>
+      </div>
+    </div>
+
+    <section>
+      <div class="container">
+        <div id="profile-content">
+          <div class="profile-loading">Carregando perfil...</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="../scripts/shared/layout.js"></script>
+  <script type="module" src="../scripts/pages/perfil.js"></script>
+</body>
+</html>

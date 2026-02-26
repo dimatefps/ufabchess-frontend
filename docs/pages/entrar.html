@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UFABCHESS — Entrar</title>
+  <meta name="description" content="Faça login ou cadastre-se no Clube de Xadrez da UFABC.">
+  <link rel="icon" href="../assets/images/logoufabchess.ico" type="image/x-icon">
+  <link rel="stylesheet" href="../styles/global.css">
+  <style>
+    .auth-wrapper {
+      min-height: calc(100vh - 200px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+    }
+    .auth-card {
+      max-width: 420px;
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px 36px;
+    }
+    .auth-card .logo-area {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .auth-card .logo-area img {
+      width: 56px;
+      height: auto;
+      margin: 0 auto 14px;
+    }
+    .auth-card .logo-area h1 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .auth-card .logo-area p {
+      font-size: .86rem;
+      color: var(--text-secondary);
+    }
+
+    /* Tabs */
+    .auth-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+    .auth-tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px 0;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all var(--ease);
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      font-family: var(--font-body);
+    }
+    .auth-tab:hover { color: var(--text-secondary); }
+    .auth-tab.active {
+      color: var(--green);
+      border-bottom-color: var(--green);
+    }
+
+    /* Forms */
+    .auth-form { display: none; }
+    .auth-form.active { display: block; }
+    .form-group { margin-bottom: 18px; }
+    .form-group label {
+      display: block;
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      letter-spacing: .2px;
+    }
+    .form-group input {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: .92rem;
+      padding: 10px 13px;
+      border-radius: var(--radius-sm);
+      outline: none;
+      transition: border-color var(--ease);
+    }
+    .form-group input:focus { border-color: var(--green); }
+    .form-group input::placeholder { color: var(--text-muted); }
+
+    .auth-submit {
+      width: 100%;
+      margin-top: 6px;
+    }
+
+    .auth-message {
+      margin-top: 14px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-size: .84rem;
+      display: none;
+      line-height: 1.5;
+    }
+    .auth-message.error {
+      display: block;
+      background: rgba(200, 50, 50, .12);
+      border: 1px solid rgba(200, 50, 50, .25);
+      color: #e88;
+    }
+    .auth-message.success {
+      display: block;
+      background: rgba(118, 150, 86, .12);
+      border: 1px solid rgba(118, 150, 86, .25);
+      color: var(--green-light);
+    }
+
+    .info-note {
+      margin-top: 20px;
+      padding: 12px 16px;
+      background: rgba(118, 150, 86, .07);
+      border: 1px solid rgba(118, 150, 86, .15);
+      border-radius: var(--radius-sm);
+      font-size: .82rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .info-note strong { color: var(--text-primary); }
+
+    @media (max-width: 480px) {
+      .auth-card { padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <div class="auth-wrapper">
+      <div class="auth-card">
+        <div class="logo-area">
+          <img src="../assets/images/logoufabchess_negativo.png" alt="UFABCHESS">
+          <h1>UFABCHESS</h1>
+          <p>Acesse sua conta de jogador</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">Entrar</button>
+          <button class="auth-tab" data-tab="register">Cadastrar</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="form-login" class="auth-form active">
+          <div class="form-group">
+            <label for="login-email">Email</label>
+            <input type="email" id="login-email" placeholder="seu@email.com" required>
+          </div>
+          <div class="form-group">
+            <label for="login-password">Senha</label>
+            <input type="password" id="login-password" placeholder="Sua senha" required>
+          </div>
+          <button id="btn-login" class="btn-primary auth-submit">Entrar</button>
+          <div id="login-message" class="auth-message"></div>
+        </div>
+
+        <!-- Register Form -->
+        <div id="form-register" class="auth-form">
+          <div class="form-group">
+            <label for="reg-name">Nome completo</label>
+            <input type="text" id="reg-name" placeholder="Seu nome como aparece no torneio" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-email">Email</label>
+            <input type="email" id="reg-email" placeholder="seu@email.com" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-password">Senha</label>
+            <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" required>
+          </div>
+          <button id="btn-register" class="btn-primary auth-submit">Criar conta</button>
+          <div id="register-message" class="auth-message"></div>
+
+          <div class="info-note">
+            💡 <strong>Já participou de torneios?</strong> Use exatamente o mesmo nome que aparece no ranking. O sistema vincula automaticamente sua conta ao seu histórico de partidas e rating.
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="../scripts/shared/layout.js"></script>
+  <script type="module" src="../scripts/pages/auth.js"></script>
+</body>
+</html>

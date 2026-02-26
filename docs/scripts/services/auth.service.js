@@ -2,9 +2,11 @@ import { supabase } from "./supabase.js";
 
 /* ══════════════════════════════════
    AUTH SERVICE — Jogadores
+   Atualizado: vinculação por email,
+   não mais por nome
 ══════════════════════════════════ */
 
-/** Cadastrar novo jogador */
+/** Cadastrar novo jogador (apenas cria auth user) */
 export async function signUp(email, password, fullName) {
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -16,13 +18,10 @@ export async function signUp(email, password, fullName) {
 
   if (error) throw error;
 
-  // Vincular ao perfil de jogador
-  const { error: rpcError } = await supabase.rpc("register_player", {
-    p_full_name: fullName,
-    p_email: email
-  });
+  // NÃO chamar mais a RPC register_player aqui.
+  // A vinculação/cadastro de player acontece na página meu-perfil.html
+  // após a confirmação de email.
 
-  if (rpcError) throw rpcError;
   return data;
 }
 
@@ -57,9 +56,33 @@ export async function getUser() {
   return user;
 }
 
-/** Buscar perfil do jogador logado */
+/** Buscar perfil do jogador logado (via user_id) */
 export async function getMyProfile() {
-  const { data, error } = await supabase.rpc("get_my_profile");
-  if (error) throw error;
-  return data;
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data: player, error } = await supabase
+    .from("players")
+    .select("*")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (error || !player) return null;
+
+  // Calcular rank
+  const { count: totalPlayers } = await supabase
+    .from("players")
+    .select("id", { count: "exact", head: true });
+
+  const { count: playersAbove } = await supabase
+    .from("players")
+    .select("id", { count: "exact", head: true })
+    .gt("rating_rapid", player.rating_rapid ?? 0);
+
+  return {
+    ...player,
+    found: true,
+    rank: (playersAbove ?? 0) + 1,
+    total_players: totalPlayers ?? 0
+  };
 }

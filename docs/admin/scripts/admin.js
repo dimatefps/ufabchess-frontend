@@ -23,17 +23,15 @@ const { data: referee, error: refereeError } = await supabase
   .eq("id", user.id)
   .single();
 
-const refereeRole = referee.role;
-  
-const refereeId = user.id;
-
-
-
+// Verificar PRIMEIRO se o referee existe
 if (refereeError || !referee) {
   alert("Acesso negado");
   await supabase.auth.signOut();
   window.location.href = "../pages/admin-login.html";
 }
+
+const refereeRole = referee.role;
+const refereeId = user.id;
 
 /* =======================
    SHOW REFEREE NAME

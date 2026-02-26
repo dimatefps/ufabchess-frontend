@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UFABCHESS — Meu Perfil</title>
+  <meta name="description" content="Seu perfil no Clube de Xadrez UFABC. Rating, partidas e presença nos torneios.">
+  <link rel="icon" href="../assets/images/logoufabchess.ico" type="image/x-icon">
+  <link rel="stylesheet" href="../styles/global.css">
+  <style>
+    /* ═══════════════════════════════════════
+       MEU PERFIL — Styles
+       ═══════════════════════════════════════ */
+
+    /* State control */
+    .profile-state { display: none; }
+    .profile-state.active { display: block; }
+
+    /* ── AUTH CARD (Login / Signup) ── */
+    .auth-card {
+      max-width: 440px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+    }
+    .auth-card h2 { font-size: 1.25rem; margin-bottom: 6px; }
+    .auth-card .auth-sub {
+      color: var(--text-secondary); font-size: .9rem;
+      margin-bottom: 28px; line-height: 1.6;
+    }
+    .auth-tabs {
+      display: flex; margin-bottom: 24px;
+      border-bottom: 2px solid var(--border);
+    }
+    .auth-tab {
+      flex: 1; background: none; border: none;
+      color: var(--text-muted); font-family: var(--font-body);
+      font-size: .88rem; font-weight: 600; padding: 10px 0;
+      cursor: pointer; transition: color var(--ease);
+      border-bottom: 2px solid transparent; margin-bottom: -2px;
+    }
+    .auth-tab.active { color: var(--green); border-bottom-color: var(--green); }
+    .auth-tab:hover:not(.active) { color: var(--text-secondary); }
+
+    /* ── FORM ELEMENTS ── */
+    .pf-group { margin-bottom: 16px; }
+    .pf-group label {
+      display: block; font-size: .76rem; font-weight: 600;
+      color: var(--text-secondary); margin-bottom: 5px;
+      letter-spacing: .2px; text-transform: uppercase;
+    }
+    .pf-group input,
+    .pf-group select {
+      width: 100%; background: var(--bg-input);
+      border: 1px solid var(--border); color: var(--text-primary);
+      font-family: var(--font-body); font-size: .92rem;
+      padding: 10px 13px; border-radius: var(--radius-sm);
+      outline: none; transition: border-color var(--ease);
+    }
+    .pf-group input:focus,
+    .pf-group select:focus { border-color: var(--green); }
+    .pf-group input::placeholder { color: var(--text-muted); }
+    .pf-group input:disabled,
+    .pf-group select:disabled {
+      opacity: .55; cursor: not-allowed;
+    }
+    .pf-group select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%239d9893' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+    }
+    .pf-group select option {
+      background: var(--bg-card); color: var(--text-primary);
+    }
+    .pf-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    }
+    .pf-hint {
+      font-size: .76rem; color: var(--text-muted);
+      margin-top: 4px; line-height: 1.4;
+    }
+
+    /* Messages */
+    .form-error {
+      color: #e88; font-size: .82rem; margin-top: 10px;
+      display: none; line-height: 1.5;
+    }
+    .form-error.visible { display: block; }
+    .form-success {
+      color: var(--green-light); font-size: .82rem; margin-top: 10px;
+      display: none; line-height: 1.5;
+    }
+    .form-success.visible { display: block; }
+
+    /* ── VERIFY EMAIL CARD ── */
+    .verify-card {
+      max-width: 480px; margin: 0 auto;
+      background: var(--bg-card); border: 1px solid var(--yellow);
+      border-radius: var(--radius-lg); padding: 40px; text-align: center;
+    }
+    .verify-card .verify-icon { font-size: 2.8rem; margin-bottom: 16px; }
+    .verify-card h2 { font-size: 1.2rem; margin-bottom: 8px; }
+    .verify-card .verify-sub {
+      color: var(--text-secondary); font-size: .9rem;
+      margin-bottom: 24px; line-height: 1.65;
+    }
+    .verify-email-hl { color: var(--yellow); font-weight: 700; }
+    .verify-actions {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    #verify-message {
+      font-size: .82rem; margin-top: 14px;
+      display: none; line-height: 1.5;
+    }
+    #verify-message.visible { display: block; }
+
+    /* ── LINK CARD (match existente) ── */
+    .link-card {
+      max-width: 520px; margin: 0 auto;
+      background: var(--bg-card); border: 1px solid var(--green);
+      border-radius: var(--radius-lg); padding: 36px 40px;
+      text-align: center;
+    }
+    .link-card .link-icon { font-size: 2.4rem; margin-bottom: 14px; }
+    .link-card h2 { font-size: 1.2rem; margin-bottom: 8px; }
+    .link-card .link-sub {
+      color: var(--text-secondary); font-size: .9rem;
+      margin-bottom: 24px; line-height: 1.65;
+    }
+    .link-player-info {
+      background: var(--bg-secondary); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 18px 24px;
+      margin-bottom: 24px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 20px; flex-wrap: wrap;
+    }
+    .link-player-name { font-weight: 700; font-size: 1.05rem; color: var(--text-primary); }
+    .link-player-rating {
+      font-family: 'Courier New', monospace; font-weight: 700;
+      font-size: 1.1rem; color: var(--green);
+    }
+    .link-player-games { font-size: .85rem; color: var(--text-muted); }
+    .link-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── REGISTER CARD (jogador novo) ── */
+    .register-card {
+      max-width: 500px; margin: 0 auto;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 36px 40px;
+    }
+    .register-card h2 { font-size: 1.15rem; margin-bottom: 6px; }
+    .register-card .register-sub {
+      color: var(--text-secondary); font-size: .9rem;
+      margin-bottom: 24px; line-height: 1.65;
+    }
+    .level-info {
+      margin-top: 4px; font-size: .76rem; color: var(--text-muted);
+      line-height: 1.55;
+    }
+    .level-info span { color: var(--green); font-weight: 600; }
+
+    /* ── PROFILE VIEW ── */
+    .profile-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px; max-width: 650px; margin: 0 auto;
+    }
+    .profile-header-card {
+      grid-column: 1 / -1;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 28px 32px;
+      display: flex; align-items: center; gap: 24px;
+    }
+    .p-avatar {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: var(--bg-secondary); border: 2px solid var(--green);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; font-weight: 800; color: var(--green);
+      flex-shrink: 0; font-family: var(--font-heading);
+    }
+    .p-info h2 {
+      font-size: 1.3rem; margin-bottom: 2px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .p-info .p-email { font-size: .82rem; color: var(--text-muted); }
+    .p-info .p-rank { font-size: .85rem; color: var(--text-secondary); margin-top: 4px; }
+
+    .stat-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 22px 24px; text-align: center;
+    }
+    .stat-card .stat-value {
+      font-size: 2rem; font-weight: 800; color: var(--green);
+      font-family: 'Courier New', monospace; line-height: 1; margin-bottom: 6px;
+    }
+    .stat-card .stat-label {
+      font-size: .72rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--text-muted);
+    }
+
+    /* ── TOURNAMENT CHECK-IN CARD ── */
+    .checkin-card {
+      grid-column: 1 / -1;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 24px 28px;
+    }
+    .checkin-card .card-title { margin-bottom: 14px; }
+    .checkin-event {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; flex-wrap: wrap; padding: 16px 20px;
+      background: var(--bg-secondary); border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+    .checkin-event-info h3 { font-size: 1rem; margin-bottom: 2px; }
+    .checkin-event-info p { font-size: .84rem; color: var(--text-secondary); }
+    .checkin-event-info .slots { font-size: .78rem; color: var(--text-muted); margin-top: 4px; }
+    .checkin-event-info .slots strong { color: var(--green); }
+    .checkin-status {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: .72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .8px; padding: 4px 12px; border-radius: 20px; margin-top: 6px;
+    }
+    .checkin-confirmed {
+      background: rgba(118,150,86,.12); border: 1px solid rgba(118,150,86,.25);
+      color: var(--green);
+    }
+    .checkin-confirmed::before { content: '✓ '; }
+
+    #btn-checkin { white-space: nowrap; min-width: 150px; }
+    #btn-cancel-checkin {
+      white-space: nowrap; min-width: 150px;
+      background: transparent; color: #e88;
+      border: 1px solid rgba(200,80,80,.4);
+      font-family: var(--font-body); font-size: .85rem; font-weight: 600;
+      padding: 9px 20px; border-radius: var(--radius-sm);
+      cursor: pointer; transition: all var(--ease);
+    }
+    #btn-cancel-checkin:hover { border-color: #e88; background: rgba(200,80,80,.08); }
+
+    .checkin-list { margin-top: 16px; }
+    .checkin-list-header {
+      font-size: .7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--text-muted); margin-bottom: 10px;
+    }
+    .checkin-player {
+      display: flex; align-items: center; gap: 12px;
+      padding: 9px 14px; border-bottom: 1px solid var(--border);
+      font-size: .88rem; animation: fadeUp .25s ease both;
+    }
+    .checkin-player:last-child { border-bottom: none; }
+    .checkin-player .cp-pos { width: 22px; font-weight: 600; font-size: .8rem; color: var(--text-muted); text-align: center; }
+    .checkin-player .cp-name { flex: 1; font-weight: 500; color: var(--text-primary); }
+    .checkin-player .cp-rating { font-family: 'Courier New', monospace; font-weight: 700; color: var(--green); font-size: .88rem; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Profile actions */
+    .profile-actions {
+      grid-column: 1 / -1;
+      display: flex; gap: 12px; flex-wrap: wrap;
+      justify-content: center; margin-top: 4px;
+    }
+    .btn-logout {
+      background: transparent; color: var(--text-muted);
+      border: 1px solid var(--border);
+      font-family: var(--font-body); font-size: .82rem; font-weight: 600;
+      padding: 9px 24px; border-radius: var(--radius-sm);
+      cursor: pointer; transition: border-color var(--ease), color var(--ease);
+    }
+    .btn-logout:hover { border-color: #e88; color: #e88; }
+
+    /* Loading */
+    .loading-spinner {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; padding: 60px 0; color: var(--text-muted); font-size: .9rem;
+    }
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid var(--border); border-top-color: var(--green);
+      border-radius: 50%; animation: spin .6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .auth-card, .verify-card, .link-card, .register-card { padding: 28px 22px; }
+      .profile-grid { grid-template-columns: 1fr; }
+      .profile-header-card { flex-direction: column; text-align: center; gap: 14px; }
+      .p-info h2 { justify-content: center; }
+      .link-player-info { flex-direction: column; gap: 8px; }
+      .checkin-event { flex-direction: column; align-items: flex-start; }
+      .pf-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <div class="page-hero">
+      <div class="container">
+        <h1>Meu Perfil</h1>
+        <p>Seus dados, rating e presença nos torneios.</p>
+      </div>
+    </div>
+
+    <section>
+      <div class="container">
+
+        <!-- ══ STATE: Loading ══ -->
+        <div id="state-loading" class="profile-state active">
+          <div class="loading-spinner">
+            <div class="spinner"></div>
+            Carregando...
+          </div>
+        </div>
+
+        <!-- ══ STATE: Login / Criar Conta ══ -->
+        <div id="state-auth" class="profile-state">
+          <div class="auth-card">
+            <h2>Acesse sua conta</h2>
+            <p class="auth-sub">Faça login ou crie sua conta para acompanhar seu rating e participar dos torneios.</p>
+
+            <div class="auth-tabs">
+              <button class="auth-tab active" data-tab="login">Entrar</button>
+              <button class="auth-tab" data-tab="signup">Criar conta</button>
+            </div>
+
+            <!-- Login -->
+            <form id="form-login" class="auth-form">
+              <div class="pf-group">
+                <label for="login-email">Email</label>
+                <input type="email" id="login-email" placeholder="seu@email.com" required>
+              </div>
+              <div class="pf-group">
+                <label for="login-password">Senha</label>
+                <input type="password" id="login-password" placeholder="Sua senha" required>
+              </div>
+              <button type="submit" class="btn-primary" style="width:100%;padding:12px;margin-top:4px;">Entrar</button>
+              <p id="login-error" class="form-error"></p>
+            </form>
+
+            <!-- Signup -->
+            <form id="form-signup" style="display:none;">
+              <div class="pf-group">
+                <label for="signup-name">Nome completo</label>
+                <input type="text" id="signup-name" placeholder="Seu nome completo" required>
+              </div>
+              <div class="pf-group">
+                <label for="signup-email">Email</label>
+                <input type="email" id="signup-email" placeholder="seu@email.com" required>
+              </div>
+              <div class="pf-group">
+                <label for="signup-password">Senha</label>
+                <input type="password" id="signup-password" placeholder="Mínimo 6 caracteres" minlength="6" required>
+              </div>
+              <div class="pf-group">
+                <label for="signup-password-confirm">Confirmar senha</label>
+                <input type="password" id="signup-password-confirm" placeholder="Digite a senha novamente" minlength="6" required>
+              </div>
+              <button type="submit" class="btn-primary" style="width:100%;padding:12px;margin-top:4px;">Criar conta</button>
+              <p id="signup-error" class="form-error"></p>
+              <p id="signup-success" class="form-success"></p>
+            </form>
+          </div>
+        </div>
+
+        <!-- ══ STATE: Confirmar Email ══ -->
+        <div id="state-verify" class="profile-state">
+          <div class="verify-card">
+            <div class="verify-icon">📧</div>
+            <h2>Confirme seu email</h2>
+            <p class="verify-sub">
+              Para sua segurança, precisamos verificar que o email é realmente seu.<br><br>
+              Enviamos um link de confirmação para
+              <span class="verify-email-hl" id="verify-email-display"></span>.<br>
+              Clique no link e depois volte aqui.
+            </p>
+            <div class="verify-actions">
+              <button class="btn-primary" onclick="location.reload()">Já confirmei</button>
+              <button class="btn-secondary" id="btn-resend" onclick="resendVerification()">Reenviar email</button>
+            </div>
+            <p id="verify-message"></p>
+            <div style="margin-top:24px;">
+              <button class="btn-logout" onclick="handleLogout()">Sair</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ STATE: Email bate com jogador do Forms ══ -->
+        <div id="state-link" class="profile-state">
+          <div class="link-card">
+            <div class="link-icon">♟️</div>
+            <h2>Encontramos seu perfil!</h2>
+            <p class="link-sub">
+              Seu email corresponde a um jogador já cadastrado nos torneios da UFABCHESS.
+              Deseja vincular sua conta a esse perfil?
+            </p>
+            <div class="link-player-info" id="link-player-info"></div>
+            <div class="link-actions">
+              <button class="btn-primary" id="btn-link-confirm">Sim, vincular minha conta</button>
+              <button class="btn-secondary" id="btn-link-deny">Não sou essa pessoa</button>
+            </div>
+            <p id="link-error" class="form-error" style="text-align:center;margin-top:14px;"></p>
+          </div>
+        </div>
+
+        <!-- ══ STATE: Cadastro de jogador novo ══ -->
+        <div id="state-register" class="profile-state">
+          <div class="register-card">
+            <h2>Complete seu cadastro de jogador</h2>
+            <p class="register-sub">
+              Preencha seus dados para aparecer no ranking e participar dos torneios da UFABCHESS.
+            </p>
+
+            <form id="form-register">
+              <div class="pf-group">
+                <label for="reg-name">Nome completo</label>
+                <input type="text" id="reg-name" placeholder="Como deseja aparecer no ranking" required>
+              </div>
+
+              <div class="pf-group">
+                <label for="reg-email">Email (verificado)</label>
+                <input type="email" id="reg-email" disabled>
+              </div>
+
+              <div class="pf-row">
+                <div class="pf-group">
+                  <label for="reg-birth">Ano de nascimento</label>
+                  <input type="number" id="reg-birth" placeholder="Ex: 2001" min="1950" max="2015" required>
+                </div>
+                <div class="pf-group">
+                  <label for="reg-gender">Gênero</label>
+                  <select id="reg-gender" required>
+                    <option value="">Selecione</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Feminino">Feminino</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="pf-row">
+                <div class="pf-group">
+                  <label for="reg-phone">Telefone</label>
+                  <input type="tel" id="reg-phone" placeholder="(11) 99999-9999" required>
+                </div>
+                <div class="pf-group">
+                  <label for="reg-ra">RA (opcional)</label>
+                  <input type="text" id="reg-ra" placeholder="Ex: 11202012345">
+                  <p class="pf-hint">Deixe em branco se não for aluno da UFABC</p>
+                </div>
+              </div>
+
+              <div class="pf-group">
+                <label for="reg-level">Nível de jogo</label>
+                <select id="reg-level" required>
+                  <option value="">Selecione seu nível</option>
+                  <option value="iniciante">Iniciante — Estou aprendendo</option>
+                  <option value="intermediario">Intermediário — Jogo regularmente</option>
+                  <option value="avancado">Avançado — Jogo competitivamente</option>
+                </select>
+                <div class="level-info">
+                  Rating inicial:
+                  Iniciante = <span>1200</span> ·
+                  Intermediário = <span>1400</span> ·
+                  Avançado = <span>1800</span>
+                </div>
+              </div>
+
+              <button type="submit" class="btn-primary" style="width:100%;padding:12px;margin-top:6px;">Finalizar cadastro</button>
+              <p id="register-error" class="form-error"></p>
+            </form>
+
+            <div style="margin-top:20px;text-align:center;">
+              <button class="btn-logout" onclick="handleLogout()">Sair</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ STATE: Perfil completo ══ -->
+        <div id="state-profile" class="profile-state">
+          <div class="profile-grid" id="profile-grid">
+            <!-- Preenchido pelo JS -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="../scripts/shared/layout.js"></script>
+  <script type="module" src="../scripts/pages/meu-perfil.js"></script>
+</body>
+</html>

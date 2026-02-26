@@ -2,9 +2,10 @@ import { supabase } from "./supabase.js";
 
 /* ══════════════════════════════════
    CHECK-IN SERVICE
+   Atualizado para usar coluna user_id
 ══════════════════════════════════ */
 
-/** Buscar semana de torneio aberta (próxima quinta) */
+/** Buscar semana de torneio aberta (próxima) */
 export async function getOpenWeek() {
   const { data, error } = await supabase
     .from("tournament_weeks")
@@ -76,22 +77,22 @@ export async function isPlayerCheckedIn(weekId) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return false;
 
+  // Buscar player vinculado ao auth user via user_id
   const { data: player } = await supabase
     .from("players")
     .select("id")
-    .eq("auth_user_id", user.id)
-    .single();
+    .eq("user_id", user.id)
+    .maybeSingle();
 
   if (!player) return false;
 
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from("tournament_checkins")
     .select("id")
     .eq("tournament_week_id", weekId)
     .eq("player_id", player.id)
     .maybeSingle();
 
-  if (error) return false;
   return !!data;
 }
 

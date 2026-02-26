@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UFABCHESS — Pareamento</title>
+  <meta name="description" content="Veja o pareamento das rodadas do torneio semanal.">
+  <link rel="icon" href="../assets/images/logoufabchess.ico" type="image/x-icon">
+  <link rel="stylesheet" href="../styles/global.css">
+  <style>
+    /* ── Round tabs ── */
+    .round-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .round-tab {
+      padding: 8px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: .84rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--ease);
+    }
+    .round-tab:hover {
+      border-color: var(--border-light);
+      color: var(--text-primary);
+    }
+    .round-tab.active {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+
+    /* ── Pairing cards ── */
+    .pairings-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .pairing-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: border-color var(--ease);
+      animation: fadeUp .3s ease both;
+    }
+    .pairing-card:hover { border-color: var(--border-light); }
+
+    .pairing-table-label {
+      background: var(--bg-secondary);
+      padding: 8px 18px;
+      font-size: .68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.1px;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pairing-matchup {
+      display: flex;
+      align-items: stretch;
+    }
+
+    .pairing-player {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 18px;
+    }
+    .pairing-player.white {
+      border-right: 1px solid var(--border);
+    }
+
+    .color-indicator {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      border: 1.5px solid var(--border-light);
+    }
+    .color-indicator.white-piece {
+      background: #f0ece8;
+    }
+    .color-indicator.black-piece {
+      background: #2c2a27;
+    }
+
+    .pairing-player-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .pairing-player-name {
+      font-weight: 600;
+      font-size: .9rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .pairing-player-rating {
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      font-size: .82rem;
+      color: var(--green);
+      margin-top: 2px;
+    }
+
+    .vs-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      font-size: .68rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+    }
+
+    /* Bye */
+    .bye-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: .85rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+    .bye-card strong { color: var(--text-secondary); }
+
+    /* No pairings */
+    .no-pairings {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--text-muted);
+      font-size: .9rem;
+    }
+
+    /* Highlight current player */
+    .pairing-player.is-me {
+      background: rgba(118, 150, 86, .06);
+    }
+    .pairing-player.is-me .pairing-player-name {
+      color: var(--green-light);
+    }
+
+    @media (max-width: 520px) {
+      .pairing-matchup { flex-direction: column; }
+      .pairing-player.white { border-right: none; border-bottom: 1px solid var(--border); }
+      .vs-divider { padding: 6px 0; }
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <div class="page-hero">
+      <div class="container">
+        <h1>Pareamento</h1>
+        <p>Confira as mesas e adversários de cada rodada.</p>
+      </div>
+    </div>
+
+    <section>
+      <div class="container">
+        <div id="pairing-week-info" style="margin-bottom:20px;"></div>
+        <div id="round-tabs" class="round-tabs" style="display:none;"></div>
+        <div id="pairings-content">
+          <div class="no-pairings">Carregando pareamentos...</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="../scripts/shared/layout.js"></script>
+  <script type="module" src="../scripts/pages/pareamento.js"></script>
+</body>
+</html>

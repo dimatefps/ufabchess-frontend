@@ -67,12 +67,53 @@
   <h2>Partidas recentes</h2>
 <ul id="matches-list"></ul>
 
-  <button id="logout">Sair</button>
+  <!-- ═══════════════════════════════════════
+       NOVO: Gerenciamento de Semanas
+  ═══════════════════════════════════════ -->
 
+  <h2>Gerenciar Semanas</h2>
+
+  <fieldset id="week-fieldset">
+    <legend>Nova Semana de Torneio</legend>
+
+    <label>
+      Torneio
+      <select id="week-tournament-select" required>
+        <option value="">Selecione o torneio</option>
+      </select>
+    </label>
+
+    <label>
+      Nº da Semana
+      <input type="number" id="week-number" min="1" required>
+    </label>
+
+    <label>
+      Data
+      <input type="date" id="week-date" required>
+    </label>
+
+    <label>
+      Máx. Jogadores
+      <input type="number" id="week-max-players" value="18" min="2" max="50">
+    </label>
+
+    <button type="button" id="btn-create-week">
+      Criar Semana
+    </button>
+  </fieldset>
+
+  <h2>Semanas Abertas</h2>
+  <ul id="weeks-list"></ul>
+
+  <!-- ═══════════════════════════════════════ -->
+
+  <button id="logout">Sair</button>
 
   <div id="status-message"></div>
 
   <script type="module" src="./scripts/admin.js"></script>
+  <script type="module" src="./scripts/admin-weeks.js"></script>
 
 </body>
 

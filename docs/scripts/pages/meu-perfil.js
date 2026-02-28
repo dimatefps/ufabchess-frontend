@@ -751,7 +751,12 @@ document.getElementById("form-signup").addEventListener("submit", async (e) => {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { full_name: fullName } }
+    options: {
+      data: { full_name: fullName },
+      // Ao clicar no link de confirmação, redirecionar direto para meu-perfil.html
+      // onde o fluxo detecta type=signup e mostra vinculação ou cadastro automaticamente
+      emailRedirectTo: window.location.origin + "/pages/meu-perfil.html"
+    }
   });
 
   if (error) {

@@ -43,38 +43,41 @@ let matchedPlayer = null;
 let myPlayer      = null;
 let ownChart      = null;
 
-// Detecta recovery SINCRONAMENTE pela URL — antes de qualquer operação async.
-// O link do Supabase vem com ?type=recovery ou #type=recovery na URL.
+// Detecta o tipo do link SINCRONAMENTE pela URL antes de qualquer async.
+// Recovery:      #type=recovery  → formulário de nova senha
+// Confirmação:   #type=signup    → aguardar SIGNED_IN antes de rodar init()
 const _urlHash   = new URLSearchParams(window.location.hash.replace("#", ""));
 const _urlParams = new URLSearchParams(window.location.search);
-let isRecoveryMode = (
-  _urlHash.get("type")   === "recovery" ||
-  _urlParams.get("type") === "recovery"
-);
+const _urlType   = _urlHash.get("type") || _urlParams.get("type");
 
-// Se já detectou pela URL, mostra o formulário imediatamente (sem flash)
-if (isRecoveryMode) showState("new-password");
+let isRecoveryMode     = _urlType === "recovery";
+let isEmailConfirmMode = _urlType === "signup"; // link de confirmação de email
+
+// Mostrar estado imediato sem esperar async
+if (isRecoveryMode)     showState("new-password");
+if (isEmailConfirmMode) showState("loading"); // aguarda SIGNED_IN processar o token
 
 /* ═══════════════════════════════════════════
-   DETECÇÃO DO LINK DE RECOVERY (fallback via evento)
-   Cobre casos onde o token vem por outro formato
+   AUTH STATE CHANGE
    ═══════════════════════════════════════════ */
 
 let _initRunning = false;
 
 supabase.auth.onAuthStateChange(async (event, session) => {
-  // Usuário veio pelo link de redefinição de senha
+  // Redefinição de senha
   if (event === "PASSWORD_RECOVERY") {
     isRecoveryMode = true;
     showState("new-password");
     return;
   }
 
-  // Usuário confirmou o email ou entrou via magic link.
-  // O init() inicial pode ter rodado antes do token ser processado
-  // e mostrado a tela de login — aqui corrigimos isso.
-  if (event === "SIGNED_IN" && session && !isRecoveryMode && !_initRunning) {
-    await init();
+  // SIGNED_IN: dispara quando o token de confirmação é trocado por sessão.
+  // Esse é o único lugar confiável para chamar init() após confirmação,
+  // pois o token pode demorar a ser processado e o init() inicial pode
+  // ter rodado antes disso (race condition).
+  if (event === "SIGNED_IN" && session && !isRecoveryMode) {
+    isEmailConfirmMode = false; // libera o init() para rodar
+    if (!_initRunning) await init();
   }
 });
 
@@ -83,9 +86,11 @@ supabase.auth.onAuthStateChange(async (event, session) => {
    ═══════════════════════════════════════════ */
 
 async function init() {
-  // Se o usuário veio pelo link de reset de senha, não interferir
+  // Modo de redefinição de senha — não interferir
   if (isRecoveryMode) return;
-  // Evita execuções paralelas (ex: SIGNED_IN disparando durante init manual)
+  // Modo de confirmação de email — aguardar SIGNED_IN processar o token
+  if (isEmailConfirmMode) return;
+  // Evita execuções paralelas
   if (_initRunning) return;
   _initRunning = true;
 
@@ -137,12 +142,18 @@ async function checkPlayerProfile(user) {
 
   const userEmail = user.email.toLowerCase().trim();
 
-  const { data: emailMatch } = await supabase
+  const { data: emailMatch, error: emailMatchError } = await supabase
     .from("players")
     .select("*")
     .ilike("email", userEmail)
     .is("user_id", null)
+    .limit(1)       // evita erro se houver duplicatas no banco
     .maybeSingle();
+
+  if (emailMatchError) {
+    console.error("Erro ao buscar player por email:", emailMatchError);
+    // Não bloquear o usuário — vai para cadastro novo
+  }
 
   if (emailMatch) {
     matchedPlayer = emailMatch;
@@ -786,12 +797,15 @@ document.getElementById("btn-link-confirm")?.addEventListener("click", async () 
   btn.disabled = true;
   btn.textContent = "Vinculando...";
 
-  const { error } = await supabase.rpc("link_player_to_user", {
+  const { data: rpcResult, error } = await supabase.rpc("link_player_to_user", {
     p_player_id: matchedPlayer.id
   });
 
-  if (error) {
-    showError(errorEl, error.message || "Erro ao vincular conta.");
+  // A RPC pode retornar {success: false, error: "..."} como DATA (não como error do Supabase)
+  const rpcFailed = error || rpcResult?.success === false;
+  if (rpcFailed) {
+    const msg = error?.message || rpcResult?.error || "Erro ao vincular conta.";
+    showError(errorEl, msg);
     btn.disabled = false;
     btn.textContent = "Sim, vincular minha conta";
     return;
@@ -911,6 +925,8 @@ function formatDate(dateStr) {
 
 /* ═══════════════════════════════════════════
    START
+   Se vier de um link de confirmação de email, NÃO chamar init() aqui.
+   O SIGNED_IN vai cuidar disso depois de processar o token.
    ═══════════════════════════════════════════ */
 
-init();
+if (!isEmailConfirmMode) init();
